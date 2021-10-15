@@ -38,4 +38,23 @@ public class HelloSpringService {
        }
        return map.get(username);
    }
+
+   public void deleteUser(String username){
+
+       if(map.containsKey(username)){
+           map.remove(username);
+       }
+
+   }
+
+   public void changeUsername(String oldUsername, String newUsername){
+
+       if(map.containsKey(oldUsername)){
+           ArrayList<String> comments = map.get(oldUsername);
+           map.put(newUsername, comments);
+           map.remove(oldUsername);
+       }
+
+   }
+
 }
