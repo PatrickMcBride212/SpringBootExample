@@ -139,10 +139,12 @@ public class CommentsControllerTest {
         RequestBuilder request = delete("/comments/username")
                 .param("username", message.getUsername());
 
-        this.mvc.perform(request)
+        this.mvc.perform(request);
+        this.mvc.perform(get("/comments"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$[0].username", is(message1.getUsername())))
                 .andExpect(jsonPath("$[0].comment", is(message1.getComment())));
     }
+
 }
