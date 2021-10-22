@@ -24,17 +24,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CommentsControllerTest {
+    @Autowired
+    private MockMvc mvc;
+
+    ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    MessageRepository messageRepository;
 
     public String getJSON(String path) throws Exception {
         Path paths = Paths.get(path);
         return new String(Files.readAllBytes(paths));
     }
 
-    @Autowired
-    private MockMvc mvc;
-
-    ObjectMapper mapper = new ObjectMapper();
-
+    private void createTestData() throws Exception {
+        String commentStr = getJSON("src/test/resources/userComments.json");
+        Message message = mapper.readValue(commentStr, Message.class);
+        this.messageRepository.save(message);
+    }
     @Test
     public void testIsEmpty() throws Exception {
         this.mvc.perform(get("/comments")).andExpect(status().isOk()).andExpect(content().json("[]"));
@@ -56,5 +63,18 @@ public class CommentsControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.username", is(message.getUsername())))
                 .andExpect(jsonPath("$.comment", is(message.getComment())));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testGetUserComments() throws Exception {
+        createTestData();
+        Message message = this.messageRepository.findAll().iterator().next();
+        this.mvc.perform(get("/comments"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$[0].username", is(message.getUsername())))
+                .andExpect(jsonPath("$[0].comment", is(message.getComment())));
     }
 }
