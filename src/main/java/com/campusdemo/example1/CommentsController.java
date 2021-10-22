@@ -33,4 +33,12 @@ public class CommentsController {
         }
         return new CommentDetailResponse(HttpStatus.NOT_FOUND.value(), "Username not found.", null);
     }
+
+    @DeleteMapping("/username")
+    public void deleteUserCommentByUsername(@RequestParam String username) {
+        Optional<Message> message = this.messageRepository.findByUsername(username);
+        if (message.isPresent()) {
+            this.messageRepository.deleteByUsername(username);
+        }
+    }
 }

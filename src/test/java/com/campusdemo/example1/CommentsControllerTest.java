@@ -18,8 +18,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -91,6 +90,24 @@ public class CommentsControllerTest {
     @Test
     @Transactional
     @Rollback
+    public void testGetManyUserComments() throws Exception {
+        createManyTestDataCases();
+        List<Message> messagesList = (List<Message>) this.messageRepository.findAll();
+        Message message1 = messagesList.get(0);
+        Message message2 = messagesList.get(3);
+
+        this.mvc.perform(get("/comments"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$[0].username", is(message1.getUsername())))
+                .andExpect(jsonPath("$[0].comment", is(message1.getComment())))
+                .andExpect(jsonPath("$[3].username", is(message2.getUsername())))
+                .andExpect(jsonPath("$[3].comment", is(message2.getComment())));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
     public void testGetUserCommentsByUsername() throws Exception {
         createManyTestDataCases();
         List<Message> messagesList = (List<Message>) this.messageRepository.findAll();
@@ -106,4 +123,23 @@ public class CommentsControllerTest {
                 .andExpect(jsonPath("$.data.comment", is(message.getComment())));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void testDeleteUserCommentByUsername() throws Exception {
+        createManyTestDataCases();
+        List<Message> messageList = (List<Message>) this.messageRepository.findAll();
+        Message message1 = messageList.get(0);
+        Message message2 = messageList.get(1);
+
+        RequestBuilder request = delete("/comments/username")
+                .param("username", message1.getUsername());
+
+        this.mvc.perform(request);
+        this.mvc.perform(get("/comments"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$[0].username", is(message2.getUsername())))
+                .andExpect(jsonPath("$[0].comment", is(message2.getComment())));
+    }
 }
