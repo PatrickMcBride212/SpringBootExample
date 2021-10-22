@@ -134,6 +134,7 @@ public class CommentsControllerTest {
         System.out.println(message1.getComment());
         System.out.println(newMessage.getUsername());
         System.out.println(newMessage.getComment());
+
     }
 
 }
