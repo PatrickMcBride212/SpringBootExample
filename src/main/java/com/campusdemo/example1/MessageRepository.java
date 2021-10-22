@@ -11,4 +11,5 @@ public interface MessageRepository extends CrudRepository<Message, Integer> {
     @Modifying
     @Query("delete from Message m where m.username = ?1")
     void deleteByUsername(String username);
+
 }

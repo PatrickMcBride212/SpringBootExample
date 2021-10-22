@@ -18,7 +18,11 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -126,20 +130,19 @@ public class CommentsControllerTest {
     @Test
     @Transactional
     @Rollback
-    public void testDeleteUserCommentByUsername() throws Exception {
+    public void testDeleteUserCommentsByUsername() throws Exception {
         createManyTestDataCases();
         List<Message> messageList = (List<Message>) this.messageRepository.findAll();
-        Message message1 = messageList.get(0);
-        Message message2 = messageList.get(1);
+        Message message = messageList.get(0);
+        Message message1 = messageList.get(1);
 
         RequestBuilder request = delete("/comments/username")
-                .param("username", message1.getUsername());
+                .param("username", message.getUsername());
 
-        this.mvc.perform(request);
-        this.mvc.perform(get("/comments"))
+        this.mvc.perform(request)
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$[0].username", is(message2.getUsername())))
-                .andExpect(jsonPath("$[0].comment", is(message2.getComment())));
+                .andExpect(jsonPath("$[0].username", is(message1.getUsername())))
+                .andExpect(jsonPath("$[0].comment", is(message1.getComment())));
     }
 }
