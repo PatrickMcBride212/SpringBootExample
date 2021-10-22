@@ -20,7 +20,7 @@ public class CommentsController {
         return this.messageRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping("")
     public Message createMessage(@RequestBody Message message) {
         return this.messageRepository.save(message);
     }
