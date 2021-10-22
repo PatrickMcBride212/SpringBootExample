@@ -77,4 +77,21 @@ public class CommentsControllerTest {
                 .andExpect(jsonPath("$[0].username", is(message.getUsername())))
                 .andExpect(jsonPath("$[0].comment", is(message.getComment())));
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testGetCommentByUsername() throws Exception {
+        createTestData();
+        Message message = this.messageRepository.findAll().iterator().next();
+
+        RequestBuilder request = get("/comments/username")
+                .param("username", message.getUsername());
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$[0].username", is(message.getUsername())))
+                .andExpect(jsonPath("$[0].comment", is(message.getComment())));
+    }
 }
