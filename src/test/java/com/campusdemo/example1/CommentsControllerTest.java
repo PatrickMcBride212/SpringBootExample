@@ -77,4 +77,6 @@ public class CommentsControllerTest {
                 .andExpect(jsonPath("$[0].username", is(message.getUsername())))
                 .andExpect(jsonPath("$[0].comment", is(message.getComment())));
     }
+
+
 }

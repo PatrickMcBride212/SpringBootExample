@@ -2,6 +2,9 @@ package com.campusdemo.example1;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface MessageRepository extends CrudRepository<Message, Integer> {
+import javax.swing.text.html.Option;
+import java.util.Optional;
 
+public interface MessageRepository extends CrudRepository<Message, Integer> {
+    Optional<Message> findByUsername(String username);
 }
