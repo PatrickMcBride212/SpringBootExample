@@ -21,9 +21,7 @@ public class CommentsController {
     }
 
     @PostMapping("")
-    public Message createMessage(@RequestBody Message message) {
-        return this.messageRepository.save(message);
-    }
+    public Message createMessage(@RequestBody Message message) { return this.messageRepository.save(message); }
 
     @GetMapping("/username")
     public CommentDetailResponse getUserCommentByUsername(@RequestParam String username) {

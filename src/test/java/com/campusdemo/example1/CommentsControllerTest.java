@@ -115,15 +115,25 @@ public class CommentsControllerTest {
         List<Message> messageList = (List<Message>) this.messageRepository.findAll();
         Message message = messageList.get(0);
         Message message1 = messageList.get(1);
-
+        System.out.println(message1.getUsername());
+        System.out.println(message1.getComment());
         RequestBuilder request = delete("/comments/username")
                 .param("username", message.getUsername());
 
         this.mvc.perform(request)
                 .andExpect(status().isOk())
-                .andDo(print())
+                .andDo(print());
+                /*
                 .andExpect(jsonPath("$[0].username", is(message1.getUsername())))
                 .andExpect(jsonPath("$[0].comment", is(message1.getComment())));
+
+                 */
+        messageList = (List<Message>) this.messageRepository.findAll();
+        Message newMessage = messageList.get(0);
+        System.out.println(message1.getUsername());
+        System.out.println(message1.getComment());
+        System.out.println(newMessage.getUsername());
+        System.out.println(newMessage.getComment());
     }
 
 }
